@@ -1,0 +1,60 @@
+# https://github.com/julia-actions/cache#usage
+name: CI
+
+on: [push, pull_request]
+
+# needed to allow julia-actions/cache to delete old caches that it has created
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  Test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        julia-version: [1.11.5]         # April 14, 2025
+        julia-arch: [x64]
+        os: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@v4
+    - uses: julia-actions/setup-julia@v1
+      with:
+        version: ${{ matrix.julia-version }}
+    - uses: julia-actions/cache@v1
+    - uses: julia-actions/julia-buildpkg@v1
+    # - uses: julia-actions/julia-runtest@v1
+    - name: ARGS to filter the targets
+      run: |
+           cd test/
+                           julia --project=.. runtests.jl jive
+                           julia --project=.. runtests.jl jive/s jive/m start=2
+           cd ../
+
+    - name: JIVE_SKIP
+      run: |
+           cd test/
+                           JIVE_SKIP=Example,errors,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__ julia --project=.. runtests.jl
+           cd ../
+
+    - name: runtests(; enable_distributed::Bool), JIVE_PROCS
+      run: |
+           cd test/
+                           julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"])'
+                           julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"], enable_distributed=false)'
+           JIVE_PROCS=auto julia --project=..        -e 'using Pkg; Pkg.test(; test_args=["test"])'
+           JIVE_PROCS=0    julia --project=.. -pauto -e 'using Pkg; Pkg.test(; test_args=["test"])'
+           cd ../
+
+    - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
+      run: |
+           cd test/
+           JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"])' || true
+                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"], failfast=true)' || true
+           cd ../
+
+    - name: using Revise
+      run: |
+           cd test/Example/test/
+           julia --project=.. -e 'using Pkg; Pkg.develop(path="../../../"); Pkg.add("Revise"); p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
+           cd ../../../
