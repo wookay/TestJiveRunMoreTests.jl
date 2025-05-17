@@ -32,14 +32,14 @@ jobs:
     - name: ARGS to filter the targets
       run: |
            cd test/
-                           julia --project=.. runtests.jl jive
-                           julia --project=.. runtests.jl jive/s jive/m start=2
+                           julia --project=.. runtests.jl jive/runtests/target
+                           julia --project=.. runtests.jl jive/r  start=2
            cd ../
 
     - name: runtests(; skip::Vector{String}), JIVE_SKIP
       run: |
            cd test/
-                           JIVE_SKIP=Example,errors,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__ julia --project=.. runtests.jl
+                           JIVE_SKIP=Example,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__ julia --project=.. runtests.jl
            cd ../
 
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
@@ -54,8 +54,8 @@ jobs:
     - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
       run: |
            cd test/
+                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=true)' || true
            JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"])' || true
-                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"], failfast=true)' || true
            cd ../
 
     - name: using Revise
