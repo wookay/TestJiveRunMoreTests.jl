@@ -47,6 +47,15 @@ jobs:
                            JIVE_SKIP=Example,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__ julia --project=.. runtests.jl
            cd ../
 
+    - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
+      run: |
+           julia --project=. -e 'using Pkg; Pkg.status("Jive")'
+           cd test/
+                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=false)' || true
+                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=true)' || true
+           JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"])' || true
+           cd ../
+
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
       if: ${{ matrix.julia-version != '1.6.7' }}
       run: |
@@ -58,16 +67,8 @@ jobs:
            JIVE_PROCS=0    julia --project=.. -pauto -e 'using Pkg; Pkg.test(; test_args=["test"])'
            cd ../
 
-    - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
-      run: |
-           julia --project=. -e 'using Pkg; Pkg.status("Jive")'
-           cd test/
-                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=false)' || true
-                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=true)' || true
-           JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"])' || true
-           cd ../
-
     - name: using Revise
+      if: ${{ matrix.julia-version != '1.6.7' }}
       run: |
            cd test/Example/test/
            julia --project=.. -e 'using Pkg; Pkg.develop("Revise"); p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
