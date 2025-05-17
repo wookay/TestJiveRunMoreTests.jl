@@ -36,7 +36,7 @@ jobs:
                            julia --project=.. runtests.jl jive/s jive/m start=2
            cd ../
 
-    - name: JIVE_SKIP
+    - name: runtests(; skip::Vector{String}), JIVE_SKIP
       run: |
            cd test/
                            JIVE_SKIP=Example,errors,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__ julia --project=.. runtests.jl
@@ -60,6 +60,7 @@ jobs:
 
     - name: using Revise
       run: |
+           julia --project=. -e 'using Pkg; Pkg.develop("Revise")'
            cd test/Example/test/
            julia --project=.. -e 'p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
            cd ../../../
