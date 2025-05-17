@@ -5,4 +5,6 @@ Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Example = "7aa89a43-15c6-4fe4-aa5a-9f9705f170f6"
 
 [compat]
-Revise = "3.3"
+Jive = "0.3"
+Revise = "3.7"
+Example = "0.1"
