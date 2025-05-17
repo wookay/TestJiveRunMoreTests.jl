@@ -44,6 +44,7 @@ jobs:
 
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
       run: |
+           julia --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
                            julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"])'
                            julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"], enable_distributed=false)'
@@ -53,6 +54,7 @@ jobs:
 
     - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
       run: |
+           julia --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
                                  julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=true)' || true
            JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"])' || true
