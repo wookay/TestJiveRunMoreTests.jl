@@ -27,7 +27,7 @@ using Jive
 
 context_variable = []
 
-runtests(@__DIR__, targets="target1 target2", enable_distributed=false, context=@__MODULE__, verbose=false) # default context=nothing
+runtests(@__DIR__, targets="target1 target2", enable_distributed=false, context=@__MODULE__, verbose=false, failfast=true)
 @test context_variable == [:target1, :target2]
 
 runtests(@__DIR__, targets=["target3", "target2"], enable_distributed=false, context=@__MODULE__, verbose=false)
