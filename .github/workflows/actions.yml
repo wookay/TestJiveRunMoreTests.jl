@@ -51,15 +51,18 @@ jobs:
       run: |
            julia --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
+           echo "runtests(; failfast=false)"
                                  julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=false)' || true
+           echo "runtests(; failfast=true)"
                                  julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=true)' || true
+           echo "JULIA_TEST_FAILFAST=1 julia runtests.jl"
            JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"])' || true
            cd ../
 
     - name: using Revise
       run: |
            cd test/Example/test/
-           julia --project=.. -e 'using Pkg; Pkg.add("Revise"); Pkg.activate(".."); p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
+           julia --project=.. -e 'using Pkg; Pkg.add("Revise"); Pkg.add("Jive"); Pkg.activate(".."); p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
            cd ../../../
 
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
