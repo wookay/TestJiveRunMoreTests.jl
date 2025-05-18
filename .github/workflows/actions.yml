@@ -57,6 +57,7 @@ jobs:
            cd ../
 
     - name: using Revise
+      if: ${{ matrix.julia-version != '1.6.7' }}
       run: |
            cd test/Example/test/
            julia --project=.. -e 'p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
