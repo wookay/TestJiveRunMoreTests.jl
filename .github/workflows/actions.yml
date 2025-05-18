@@ -71,7 +71,7 @@ jobs:
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
       # if: ${{ matrix.julia-version != '1.6.7' }}
       run: |
-           julia --project=. -e 'using Pkg; Pkg.status("Jive")'
+           julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.status("Jive")'
            cd test/
            echo "########### julia -pauto runtests.jl"
                            julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"])'
