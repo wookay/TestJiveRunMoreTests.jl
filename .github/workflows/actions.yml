@@ -69,7 +69,7 @@ jobs:
            cd ../../../
 
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
-      if: ${{ matrix.julia-version != '1.6.7' }}
+      # if: ${{ matrix.julia-version != '1.6.7' }}
       run: |
            julia --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
