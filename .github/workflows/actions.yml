@@ -37,13 +37,16 @@ jobs:
     - name: ARGS to filter the targets
       run: |
            cd test/
+           echo "########### julia runtests.jl jive/runtests/target"
                            julia --project=.. runtests.jl jive/runtests/target
+           echo "########### julia runtests.jl runtests.jl jive/r  start=2"
                            julia --project=.. runtests.jl jive/r  start=2
            cd ../
 
     - name: runtests(; skip::Vector{String}), JIVE_SKIP
       run: |
            cd test/
+           echo "########### JIVE_SKIP=Example,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__ julia runtests.jl"
                            JIVE_SKIP=Example,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__ julia --project=.. runtests.jl
            cd ../
 
@@ -51,11 +54,11 @@ jobs:
       run: |
            julia --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
-           echo "runtests(; failfast=false)"
+           echo "########### runtests(; failfast=false)"
                                  julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=false)' || true
-           echo "runtests(; failfast=true)"
+           echo "########### runtests(; failfast=true)"
                                  julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["fails"], failfast=true)' || true
-           echo "JULIA_TEST_FAILFAST=1 julia runtests.jl"
+           echo "########### JULIA_TEST_FAILFAST=1 julia runtests.jl"
            JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets=["errors"])' || true
            cd ../
 
@@ -70,8 +73,12 @@ jobs:
       run: |
            julia --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
+           echo "########### julia -pauto runtests.jl"
                            julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"])'
+           echo "########### julia -pauto runtests(; enable_distributed=false)"
                            julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"], enable_distributed=false)'
+           echo "########### JIVE_PROCS=auto julia runtests.jl"
            JIVE_PROCS=auto julia --project=..        -e 'using Pkg; Pkg.test(; test_args=["test"])'
+           echo "########### JIVE_PROCS=0 julia -pauto runtests.jl"
            JIVE_PROCS=0    julia --project=.. -pauto -e 'using Pkg; Pkg.test(; test_args=["test"])'
            cd ../
