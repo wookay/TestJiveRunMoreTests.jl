@@ -1,7 +1,3 @@
-module test_jive_runtests_target2
-
-using Test
-
-@test true
-
-end # module test_jive_runtests_target2
+if isdefined(@__MODULE__, :context_variable)
+    push!(context_variable, :target2)
+end

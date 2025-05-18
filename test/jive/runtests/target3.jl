@@ -1,13 +1,11 @@
-module test_jive_runtests_target3
+if isdefined(@__MODULE__, :context_variable)
+    push!(context_variable, :target3)
+end
 
 using Test
-
 @testset "hello" begin
-@test true
+    @test true
 end
-
 @testset "world" begin
-@test true
+    @test true
 end
-
-end # module test_jive_runtests_target3
