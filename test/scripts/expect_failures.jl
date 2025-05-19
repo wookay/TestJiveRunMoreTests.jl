@@ -33,21 +33,22 @@ function run_julia_scripts(cmds::String)::Report
             println(repeat("-", length(body)))
             printstyled(body, color = :cyan, bold = :true)
             println()
+
             (env_part, cmd_part) = split(line, "julia ")
             env_parts = filter(!isempty, split(env_part, " "))
             env_vars = map(env_parts) do env_part
                 (k, v) = split(env_part, "=")
                 k => v
             end
-            program = "julia"
             if occursin("-e ", cmd_part)
-                (a, e) = split(cmd_part, "-e ")
+                (_, e) = split(cmd_part, "-e ")
                 p = replace(e, "'" => "")
-                cmd = `$program -e $p`
+                args = ["-e", p]
             else
-                args = split(cmd_part)
-                cmd = Cmd(Vector{String}([program, args...]))
+                args = Vector{String}(split(cmd_part))
             end
+            program = "julia"
+            cmd = Cmd([program, args...])
         else
             continue
         end
@@ -63,6 +64,12 @@ function run_julia_scripts(cmds::String)::Report
     Report(succ_count, error_count)
 end
 
+function Base.showerror(io::IO, err::SuccessError)
+    printstyled(io, "SuccessError:", color = :red)
+    println(io)
+    print(io, err.msg)
+end
+
 function run_script(scripts::Vector{String})
     succ_count = 0
     error_count = 0
@@ -72,11 +79,12 @@ function run_script(scripts::Vector{String})
         error_count += report.error_count
     end
     if succ_count > 0
-        throw(SuccessError("🚨"))
+        throw(SuccessError("🚨 Expect failures but some commands returned success without errors."))
     else
         println("🟢 run scripts getting ", error_count, " expected failures.")
     end
 end
+
 
 if basename(pwd()) == "test" &&
    basename(PROGRAM_FILE) == "expect_failures.jl"
