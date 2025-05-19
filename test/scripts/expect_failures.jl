@@ -62,7 +62,7 @@ function run_julia_scripts(cmds::String)::Report
     end
     Report(succ_count, error_count)
 end
-    
+
 function run_script(scripts::Vector{String})
     succ_count = 0
     error_count = 0
