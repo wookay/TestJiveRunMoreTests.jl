@@ -54,24 +54,31 @@ jobs:
                              JIVE_SKIP=Example,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia --project=.. runtests.jl
            cd ../
 
+    - name: expect_failures
+      run: |
+           julia --project=. -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
+           cd test/
+           make expect_failures
+           cd ../
+
     - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
       run: |
            julia --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
            echo "########### runtests(; failfast=true)"
-                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="fails", failfast=true)' || true
+                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="fails", failfast=true)'  && echo "🚨 success" || echo "🟢 failure"
 
            echo "########### JULIA_TEST_FAILFAST=1 runtests(; )"
-           JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="fails")' || true
+           JULIA_TEST_FAILFAST=1 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="fails")'                 && echo "🚨 success" || echo "🟢 failure"
 
            echo "########### JULIA_TEST_FAILFAST=0 runtests(; failfast=true) # override by JULIA_TEST_FAILFAST"
-           JULIA_TEST_FAILFAST=0 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="fails", failfast=true)' || true
+           JULIA_TEST_FAILFAST=0 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="fails", failfast=true)'  && echo "🚨 success" || echo "🟢 failure"
 
            echo "########### runtests(; ) # failfast=false (default)"
-                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="fails")' || true
+                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="fails")'                 && echo "🚨 success" || echo "🟢 failure"
 
            echo "########### runtests(; failfast=true)"
-                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="errors", failfast=true)' || true
+                                 julia --project=..  -e 'using Jive; runtests(@__DIR__, targets="errors", failfast=true)' && echo "🚨 success" || echo "🟢 failure"
            cd ../
 
     - name: using Revise
