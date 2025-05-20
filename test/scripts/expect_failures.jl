@@ -54,9 +54,13 @@ function run_julia_scripts(cmds::String)::Report
         end
         try
             withenv(env_vars...) do
-                run(cmd)
+                if success(run(cmd))
+                    succ_count += 1
+                    Base.showerror(stdout, SuccessError("🚨 Expect failures but returned success without errors."))
+                else
+                    error_count += 1
+                end
             end
-            succ_count += 1
         catch _e
             error_count += 1
         end
@@ -65,7 +69,7 @@ function run_julia_scripts(cmds::String)::Report
 end
 
 function Base.showerror(io::IO, err::SuccessError)
-    printstyled(io, "SuccessError:", color = :red)
+    printstyled(io, "SuccessError:", color = :light_yellow, bold = true)
     println(io)
     print(io, err.msg)
 end
