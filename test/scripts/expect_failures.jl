@@ -7,9 +7,10 @@ JULIA_TEST_FAILFAST=1 JIVE_SKIP=x julia runtests.jl errors/error2.jl
 """
 
 script_failfast = """
-                      julia -e 'using Jive; runtests(@__DIR__, targets="fails", failfast=true)'
-JULIA_TEST_FAILFAST=1 julia -e 'using Jive; runtests(@__DIR__, targets="fails")'
-JULIA_TEST_FAILFAST=0 julia -e 'using Jive; runtests(@__DIR__, targets="fails", failfast=true)'
+                      julia -e 'using Jive; runtests(@__DIR__, targets="fails")'
+                      julia -e 'using Jive; runtests(@__DIR__, targets="fails/test", failfast=true)'
+JULIA_TEST_FAILFAST=1 julia -e 'using Jive; runtests(@__DIR__, targets="fails/test")'
+JULIA_TEST_FAILFAST=0 julia -e 'using Jive; runtests(@__DIR__, targets="fails/test", failfast=true)'
 """
 
 
@@ -47,8 +48,8 @@ function run_julia_scripts(cmds::String)::Report
             else
                 args = Vector{String}(split(cmd_part))
             end
-            program = "julia"
-            cmd = Cmd([program, args...])
+            julia_cmd = Base.julia_cmd()
+            cmd = Cmd([julia_cmd..., args...])
         else
             continue
         end
