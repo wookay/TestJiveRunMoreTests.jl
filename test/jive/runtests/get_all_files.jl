@@ -17,7 +17,7 @@ targets = ["//./pipe", "USE_REVISE", "USE_PLOTPANE", "get_all_files"]
 @test all_files == ["get_all_files.jl"]
 
 
-dir = normpath(@__DIR__, "../../Example/test/example") # Jive/test/Example/test/example
+dir = normpath(@__DIR__, "../../ExampleRevise/test/example") # Jive/test/ExampleRevise/test/example
 skip = String[]
 
 targets = ["test"]

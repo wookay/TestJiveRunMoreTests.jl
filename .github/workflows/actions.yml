@@ -50,8 +50,8 @@ jobs:
     - name: runtests(; skip::Vector{String}), JIVE_SKIP
       run: |
            cd test/
-           echo "########### JIVE_SKIP=Example,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia runtests.jl"
-                             JIVE_SKIP=Example,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia --project=.. runtests.jl
+           echo "########### JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia runtests.jl"
+                             JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia --project=.. runtests.jl
            cd ../
 
     - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
@@ -63,7 +63,7 @@ jobs:
 
     - name: using Revise
       run: |
-           cd test/Example/test/
+           cd test/ExampleRevise/test/
            julia --project=.. -e 'using Pkg; Pkg.add("Revise"); Pkg.add("Jive"); Pkg.activate("..")'
            julia --project=.. -e 'p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
            cd ../../../
