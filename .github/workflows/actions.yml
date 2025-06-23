@@ -61,6 +61,13 @@ jobs:
            julia --color=yes scripts/expect_failures.jl
            cd ../
 
+    - name: JET
+      if: ${{ matrix.julia-version == 'nightly' }}
+      run: |
+           cd test/
+           julia -e 'using Pkg; Pkg.add("JET"); Pkg.add("Jive"); Pkg.develop("Jive"); Pkg.activate(".."); include("scripts/jet.jl")'
+           cd ../
+
     - name: using Revise
       run: |
            cd test/ExampleRevise/test/
