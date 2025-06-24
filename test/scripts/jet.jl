@@ -2,7 +2,7 @@
 # JET
 
 using Preferences
-if !Preferences.load_preference("JET", "JET_DEV_MODE")
+if Preferences.load_preference("JET", "JET_DEV_MODE") != true
     Preferences.set_preferences!("JET", "JET_DEV_MODE" => true)
 end
 
