@@ -28,7 +28,8 @@ end
 
 @test @sprint_colored(foo)                                        == "\e[92mFoo\e[39m()"
 @test @sprint_colored(print(stdout, foo))                         == "Foo()"
-if VERSION >= v"1.6.0-DEV.481" # https://github.com/JuliaDocs/IOCapture.jl/blob/master/src/IOCapture.jl#L120
+if VERSION >= v"1.6.0-DEV.481" && # https://github.com/JuliaDocs/IOCapture.jl/blob/master/src/IOCapture.jl#L120
+    Base.JLOptions().color == 1 # --color=yes
 @test @sprint_colored(Base.show(stdout, MIME("text/plain"), foo)) == "\e[92mFoo\e[39m()"
 end
 
