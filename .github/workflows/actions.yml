@@ -50,6 +50,7 @@ jobs:
     - name: runtests(; skip::Vector{String}), JIVE_SKIP
       run: |
            cd test/
+           julia --project=.. -e 'using Pkg; Pkg.activate(".."); Pkg.develop("Jive"); Pkg.status("Jive")'
            echo "########### JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia runtests.jl"
                              JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia --project=.. runtests.jl
            cd ../
