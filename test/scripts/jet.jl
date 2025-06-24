@@ -1,3 +1,11 @@
+# Preferences
+# JET
+
+using Preferences
+if !Preferences.load_preference("JET", "JET_DEV_MODE")
+    Preferences.set_preferences!("JET", "JET_DEV_MODE" => true)
+end
+
 using JET: JET
 using .JET: ReportConfig, @report_call
 
