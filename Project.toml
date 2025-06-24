@@ -5,11 +5,13 @@ version = "0.1.0"
 
 [compat]
 Jive = "0.3"
+ANSIColoredPrinters = "0.0"
 julia = "1.6"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Jive = "ba5e3d4b-8524-549f-bc71-e76ad9e9deed"
+ANSIColoredPrinters = "a4c015fc-c6ff-483c-b24f-f7ea428134e9"
 
 [targets]
-test = ["Test", "Jive"]
+test = ["Test", "Jive", "ANSIColoredPrinters"]
