@@ -34,6 +34,13 @@ jobs:
       run: |
            julia -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
 
+    - name: JET
+      if: ${{ matrix.julia-version == 'nightly' }}
+      run: |
+           cd test/
+           julia -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
+           cd ../
+
     - name: ARGS to filter the targets
       run: |
            cd test/
@@ -60,13 +67,6 @@ jobs:
            julia -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
            cd test/
            julia --color=yes scripts/expect_failures.jl
-           cd ../
-
-    - name: JET
-      if: ${{ matrix.julia-version == 'nightly' }}
-      run: |
-           cd test/
-           julia -e 'using Pkg; Pkg.add.(("Preferences", "JET", "Jive")); Pkg.develop("Jive"); include("scripts/jet.jl")'
            cd ../
 
     - name: using Revise
