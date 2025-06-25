@@ -32,7 +32,7 @@ function run_julia_scripts(cmds::String)::Report
             println()
             body = strip(line)
             println(repeat("-", length(body)))
-            printstyled(body, color = :cyan, bold = :true)
+            printstyled(body, color = :cyan, bold = true)
             println()
 
             (env_part, cmd_part) = split(line, "julia ")
