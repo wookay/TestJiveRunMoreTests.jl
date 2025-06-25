@@ -25,3 +25,6 @@ using Distributed
 report_config = ReportConfig(#=target_modules=#(Jive,), #=ignored_modules=#(Distributed,))
 report = @report_call report_config=report_config runtests(normpath(@__DIR__, ".."); targets="testjive jive")
 show(report)
+if string(report) != "No errors detected\n"
+    throw(ErrorException("`JET.@report_call runtests` found errors"))
+end
