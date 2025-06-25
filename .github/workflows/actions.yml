@@ -32,39 +32,39 @@ jobs:
 
     - name: Pkg.develop, Pkg.status
       run: |
-           julia -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
+           julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
 
     - name: JET
       if: ${{ matrix.julia-version == 'nightly' }}
       run: |
            cd test/
-           julia -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
+           julia --color=yes -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
            cd ../
 
     - name: ARGS to filter the targets
       run: |
            cd test/
            echo "########### julia runtests.jl jive/runtests/testset testjive"
-                julia --project=.. runtests.jl jive/runtests/testset testjive
+                julia --color=yes --project=.. runtests.jl jive/runtests/testset testjive
 
            echo "########### julia runtests.jl testjive jive/runtests/testset"
-                julia --project=.. runtests.jl testjive jive/runtests/testset
+                julia --color=yes --project=.. runtests.jl testjive jive/runtests/testset
 
            echo "########### julia runtests.jl jive/r start=5"
-                julia --project=.. runtests.jl jive/r start=5
+                julia --color=yes --project=.. runtests.jl jive/r start=5
            cd ../
 
     - name: runtests(; skip::Vector{String}), JIVE_SKIP
       run: |
            cd test/
-           julia -e 'using Pkg; Pkg.add("ANSIColoredPrinters"); Pkg.develop("Jive"); Pkg.status("Jive")'
-           echo "########### JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia runtests.jl"
-                             JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia runtests.jl
+           julia --color=yes -e 'using Pkg; Pkg.add("ANSIColoredPrinters"); Pkg.develop("Jive"); Pkg.status("Jive")'
+           echo "########### JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia --color=yes runtests.jl"
+                             JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia --color=yes runtests.jl
            cd ../
 
     - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
       run: |
-           julia -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
+           julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
            cd test/
            julia --color=yes scripts/expect_failures.jl
            cd ../
@@ -72,24 +72,24 @@ jobs:
     - name: using Revise
       run: |
            cd test/ExampleRevise/test/
-           julia --project=.. -e 'using Pkg; Pkg.add("Revise"); Pkg.add("Jive"); Pkg.activate("..")'
-           julia --project=.. -e 'p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
+           julia --color=yes --project=.. -e 'using Pkg; Pkg.add("Revise"); Pkg.add("Jive"); Pkg.activate("..")'
+           julia --color=yes --project=.. -e 'p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
            cd ../../../
 
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
       if: ${{ matrix.julia-version != '1.6.7' }}
       run: |
-           julia --project=. -e 'using Pkg; Pkg.status("Jive")'
+           julia --color=yes --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
            echo "########### julia -pauto runtests.jl"
-                           julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"])'
+                           julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"])'
 
            echo "########### julia -pauto runtests(; enable_distributed=false)"
-                           julia --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"], enable_distributed=false)'
+                           julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"], enable_distributed=false)'
 
            echo "########### JIVE_PROCS=auto julia runtests.jl"
-           JIVE_PROCS=auto julia --project=..        -e 'using Pkg; Pkg.test(; test_args=["test"])'
+           JIVE_PROCS=auto julia --color=yes --project=..        -e 'using Pkg; Pkg.test(; test_args=["test"])'
 
            echo "########### JIVE_PROCS=0 julia -pauto runtests.jl"
-           JIVE_PROCS=0    julia --project=.. -pauto -e 'using Pkg; Pkg.test(; test_args=["test"])'
+           JIVE_PROCS=0    julia --color=yes --project=.. -pauto -e 'using Pkg; Pkg.test(; test_args=["test"])'
            cd ../
