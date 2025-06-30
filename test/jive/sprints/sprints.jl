@@ -10,27 +10,28 @@ end
 foo = Foo()
 
 @test Base.showable(MIME"text/plain"(), foo)
-@test sprint_plain(foo) == "Foo()"
+@test string(foo) == sprint(show, foo) ==
+      repr("text/plain", foo) == sprint_plain(foo) ==
+      "Foo()"
 
 function Base.show(io::IO, mime::MIME"text/plain", foo::Foo)
-    printstyled(io, "Foo", color = :light_green)
+    printstyled(io, "TextPlainFoo", color = :light_green)
     print(io, "()")
 end
 
-@test string(foo) == "Foo()"
-@test sprint(show, foo) == "Foo()"
-@test sprint_plain(foo)   == "Foo()"
-@test sprint_colored(foo) == "\e[92mFoo\e[39m()"
+@test string(foo) == sprint(show, foo) == "Foo()"
+@test repr("text/plain", foo) == sprint_plain(foo) == "TextPlainFoo()"
+@test sprint_colored(foo) == "\e[92mTextPlainFoo\e[39m()"
 
-@test @sprint_plain(foo)                                        == "Foo()"
+@test @sprint_plain(foo)                                        == "TextPlainFoo()"
 @test @sprint_plain(print(stdout, foo))                         == "Foo()"
-@test @sprint_plain(Base.show(stdout, MIME("text/plain"), foo)) == "Foo()"
+@test @sprint_plain(Base.show(stdout, MIME("text/plain"), foo)) == "TextPlainFoo()"
 
-@test @sprint_colored(foo)                                        == "\e[92mFoo\e[39m()"
+@test @sprint_colored(foo)                                        == "\e[92mTextPlainFoo\e[39m()"
 @test @sprint_colored(print(stdout, foo))                         == "Foo()"
 if VERSION >= v"1.6.0-DEV.481" && # https://github.com/JuliaDocs/IOCapture.jl/blob/master/src/IOCapture.jl#L120
     Base.JLOptions().color == 1 # --color=yes
-@test @sprint_colored(Base.show(stdout, MIME("text/plain"), foo)) == "\e[92mFoo\e[39m()"
+@test @sprint_colored(Base.show(stdout, MIME("text/plain"), foo)) == "\e[92mTextPlainFoo\e[39m()"
 end
 
 using ANSIColoredPrinters: PlainTextPrinter
@@ -86,6 +87,6 @@ function Base.show(io::IO, mime::MIME"text/html", foo::Foo)
 end
 
 @test Base.showable(MIME"text/html"(), foo)
-@test sprint_html(foo) == "Foo()"
+@test sprint_html(foo) == "TextPlainFoo()"
 
 end # module test_jive_sprints
