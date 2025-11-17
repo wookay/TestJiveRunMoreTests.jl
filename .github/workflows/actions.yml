@@ -75,19 +75,18 @@ jobs:
            cd ../../../
 
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
-      if: ${{ matrix.julia-version == '1.12.1' }}
       run: |
            julia --color=yes --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
            echo "########### julia -pauto runtests.jl"
-                           julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["jive"])'
+                           julia --color=yes -pauto -e 'using Jive; runtests(normpath(pathof(Jive), "../../test"))'
 
            echo "########### julia -pauto runtests(; enable_distributed=false)"
-                           julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["jive"], enable_distributed=false)'
+                           julia --color=yes -pauto -e 'using Jive; runtests(normpath(pathof(Jive), "../../test"), enable_distributed=false)'
 
            echo "########### JIVE_PROCS=auto julia runtests.jl"
-           JIVE_PROCS=auto julia --color=yes --project=..        -e 'using Jive; runtests(@__DIR__, targets=["jive"])'
+           JIVE_PROCS=auto julia --color=yes        -e 'using Jive; runtests(normpath(pathof(Jive), "../../test"))'
 
            echo "########### JIVE_PROCS=0 julia -pauto runtests.jl"
-           JIVE_PROCS=0    julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["jive"])'
+           JIVE_PROCS=0    julia --color=yes -pauto -e 'using Jive; runtests(normpath(pathof(Jive), "../../test"))'
            cd ../
