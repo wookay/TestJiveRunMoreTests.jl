@@ -80,7 +80,7 @@ jobs:
            julia --color=yes --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
            echo "########### julia -pauto runtests.jl"
-                           julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["jive])'
+                           julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["jive"])'
 
            echo "########### julia -pauto runtests(; enable_distributed=false)"
                            julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["jive"], enable_distributed=false)'
