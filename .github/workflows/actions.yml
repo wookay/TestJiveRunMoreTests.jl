@@ -55,9 +55,9 @@ jobs:
     - name: runtests(; skip::Vector{String}), JIVE_SKIP
       run: |
            cd test/
-           julia --color=yes -e 'using Pkg; Pkg.add("ANSIColoredPrinters"); Pkg.develop("Jive"); Pkg.status("Jive")'
-           echo "########### JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia --color=yes runtests.jl"
-                             JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__  julia --color=yes runtests.jl
+           julia --color=yes --project=.. -e 'using Pkg; Pkg.add("ANSIColoredPrinters"); Pkg.activate("..")'
+           echo "########### JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__,pkgs  julia runtests.jl"
+                             JIVE_SKIP=ExampleRevise,errors,fails,jive/onlyonce/heavy.jl,jive/__END__/included.jl,jive/__REPL__,pkgs  julia --color=yes --project=.. runtests.jl
            cd ../
 
     - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
