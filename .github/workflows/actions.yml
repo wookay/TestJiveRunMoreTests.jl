@@ -90,3 +90,10 @@ jobs:
            echo "########### JIVE_PROCS=0 julia -pauto runtests.jl"
            JIVE_PROCS=0    julia --color=yes -pauto -e 'using Jive; runtests(normpath(pathof(Jive), "../../test"))'
            cd ../
+
+    - name: pkgs
+      run: |
+           cd test/
+           julia --color=yes --project=.. -e 'using Pkg; Pkg.add("Aqua"); Pkg.add("TestItems"); Pkg.activate("..")'
+           julia --color=yes --project=.. runtests.jl pkgs
+           cd ../
