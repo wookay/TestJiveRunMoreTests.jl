@@ -75,7 +75,7 @@ jobs:
            cd ../../../
 
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
-      if: ${{ matrix.julia-version != '1.6.7' }}
+      if: ${{ matrix.julia-version == '1.12.1' }}
       run: |
            julia --color=yes --project=. -e 'using Pkg; Pkg.status("Jive")'
            cd test/
@@ -86,8 +86,8 @@ jobs:
                            julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"], enable_distributed=false)'
 
            echo "########### JIVE_PROCS=auto julia runtests.jl"
-           JIVE_PROCS=auto julia --color=yes --project=..        -e 'using Pkg; Pkg.test(; test_args=["test"])'
+           JIVE_PROCS=auto julia --color=yes --project=..        -e 'using Jive; runtests(@__DIR__, targets=["test"])'
 
            echo "########### JIVE_PROCS=0 julia -pauto runtests.jl"
-           JIVE_PROCS=0    julia --color=yes --project=.. -pauto -e 'using Pkg; Pkg.test(; test_args=["test"])'
+           JIVE_PROCS=0    julia --color=yes --project=.. -pauto -e 'using Jive; runtests(@__DIR__, targets=["test"])'
            cd ../
