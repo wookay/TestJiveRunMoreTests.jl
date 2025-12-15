@@ -92,6 +92,6 @@ end
 
 
 if basename(pwd()) == "test" &&
-   basename(PROGRAM_FILE) == "expect_failures.jl"
+   basename(PROGRAM_FILE) == basename(@__FILE__)
     run_script([script_fails_and_errors, script_failfast])
 end
