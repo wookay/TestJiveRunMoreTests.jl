@@ -25,5 +25,6 @@ end # @testmodule Setup
 @testitem "setup" setup=[Setup] begin
     @test Setup.N == 10
 end
+@test !(@isdefined(Setup))
 
 end # module test_pkgs_testitems_testitemrunner
