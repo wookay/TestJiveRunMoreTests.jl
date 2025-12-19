@@ -22,4 +22,4 @@ TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 
 [targets]
-test = ["Test", "Jive", "ANSIColoredPrinters", "Aqua", "TestItems", "SafeTestsets"]
+test = ["Test", "Jive", "ANSIColoredPrinters", "Aqua", "TestItems", "TestItemRunner", "SafeTestsets"]

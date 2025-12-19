@@ -94,7 +94,7 @@ jobs:
     - name: pkgs
       run: |
            cd test/
-           julia --color=yes --project=.. -e 'using Pkg; Pkg.add("Aqua"); Pkg.add("TestItems"); Pkg.activate("..")'
+           julia --color=yes --project=.. -e 'using Pkg; Pkg.add("Aqua"); Pkg.add("TestItems"); Pkg.add("TestItemRunner"); Pkg.add("SafeTestsets"); Pkg.activate("..")'
            julia --color=yes --project=.. runtests.jl pkgs
            julia --color=yes --project=.. pkgs/testitems/testitemrunner.jl
            cd ../
