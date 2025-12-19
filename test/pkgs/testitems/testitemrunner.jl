@@ -5,6 +5,7 @@ using TestItems
 using TestItemRunner
 
 # julia pkgs/testitems/testitemrunner.jl
+
 @run_package_tests verbose=true
 
 @testitem "default_imports true" default_imports=true begin
@@ -14,6 +15,15 @@ end
 @testitem "default_imports false" default_imports=false begin
     using Test
     @test true
+end
+
+
+@testmodule Setup begin
+N = 10
+end # @testmodule Setup
+
+@testitem "setup" setup=[Setup] begin
+    @test Setup.N == 10
 end
 
 end # module test_pkgs_testitems_testitemrunner

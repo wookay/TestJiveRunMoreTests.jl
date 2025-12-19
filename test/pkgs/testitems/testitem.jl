@@ -5,7 +5,7 @@ using TestItems
 
 @testset "TestItems" begin
     x = @testitem "Name of the test item" begin
-        println("Hello world")
+        @test false
     end
     @test x === nothing
 end
