@@ -4,7 +4,9 @@ using Test
 using Jive
 
 @test @sprint_plain(print(get(stdout, :color, true))) == "false"
-@test @sprint_colored(print(get(stdout, :color, false))) == "true"
+if stdout isa Base.TTY
+    @test @sprint_colored(print(get(stdout, :color, false))) == "true"
+end
 
 @test Jive.IOCapture.capture(; color = false) do
     print(stdout, get(stdout, :color, true))

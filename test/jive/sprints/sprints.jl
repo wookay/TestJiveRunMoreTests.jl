@@ -11,8 +11,11 @@ foo = Foo()
 
 @test Base.showable(MIME"text/plain"(), foo)
 @test string(foo) == sprint(show, foo) ==
-      repr("text/plain", foo) == sprint_plain(foo) ==
       "Foo()"
+
+if which(Base.show, Tuple{IO, MIME"text/plain", Foo}).module === Base.Multimedia
+    @test repr("text/plain", foo) == sprint_plain(foo) == "Foo()"
+end
 
 function Base.show(io::IO, mime::MIME"text/plain", foo::Foo)
     printstyled(io, "TextPlainFoo", color = :light_green)
@@ -79,8 +82,10 @@ if VERSION >= v"1.8"
     @test string(x) == sprint(show, x) == sprint_plain(x) == sprint_colored(x)
 end
 
-@test !(Base.showable(MIME"text/html"(), foo))
-@test_throws MethodError sprint_html(foo)
+if isempty(methods(Base.show, Tuple{IO, MIME"text/html", Foo}))
+    @test !(Base.showable(MIME"text/html"(), foo))
+    @test_throws MethodError sprint_html(foo)
+end
 
 function Base.show(io::IO, mime::MIME"text/html", foo::Foo)
     Base.show(io, MIME"text/plain"(), foo)
