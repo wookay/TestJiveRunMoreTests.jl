@@ -3,14 +3,15 @@ module test_pkgs_testrunner_runtest
 using Test
 using TestRunner
 
-result = @testset "run demo1" runtest("demo.jl", [r"demo1"])
-if result isa Test.DefaultTestSet
-    @test sum(r -> r.n_passed, result.results) == 1
+function count_passes(result)
+    tc = Test.get_test_counts(result)
+    sum((tc.cumulative_passes, tc.passes))
 end
 
-result = @testset "run demo*" runtest("demo.jl", [r"demo*"])
-if result isa Test.DefaultTestSet
-    @test sum(r -> r.n_passed, result.results) == 3
-end
+result = @testset "run demo1" runtest(normpath(@__DIR__, "demo.jl"), [r"demo1"])
+@test count_passes(result) == 1
+
+result = @testset "run demo*" runtest(normpath(@__DIR__, "demo.jl"), [r"demo*"])
+@test count_passes(result) == 3
 
 end # module test_pkgs_testrunner_runtest
