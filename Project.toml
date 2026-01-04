@@ -1,7 +1,7 @@
 name = "TestJiveRunMoreTests"
 uuid = "a90e1516-e118-4dbd-8025-f563350fc7d4"
-authors = ["WooKyoung Noh <wookay.noh@gmail.com>"]
 version = "0.1.0"
+authors = ["WooKyoung Noh <wookay.noh@gmail.com>"]
 
 [compat]
 Jive = "0.3"
@@ -24,7 +24,7 @@ SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 TestRunner = "4efbe77e-ddf3-4ce7-be91-16409ca9e85f"
 
 [sources]
-TestRunner = {url = "https://github.com/aviatesk/TestRunner.jl", rev = "master"}
+TestRunner = {url="https://github.com/aviatesk/TestRunner.jl", rev="master"}
 
 [targets]
 test = ["Test", "Jive", "ANSIColoredPrinters", "Aqua", "TestItems", "TestItemRunner", "SafeTestsets", "TestRunner"]
