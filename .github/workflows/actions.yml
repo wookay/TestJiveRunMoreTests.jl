@@ -76,7 +76,7 @@ jobs:
 
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
       run: |
-           julia --color=yes --project=. -e 'using Pkg; Pkg.status("Jive")'
+           julia --color=yes -e 'using Pkg; Pkg.add(split("Jive DaemonMode"))'
            cd test/
            echo "########### julia -pauto runtests.jl"
                            julia --color=yes -pauto -e 'using Jive; runtests(normpath(pathof(Jive), "../../test"))'
