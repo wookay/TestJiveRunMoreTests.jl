@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: [1.12.3]         # 2025-12-15
+        julia-version: [1.12.4]         # 2026-01-06
         julia-arch: [x64]
         os: [ubuntu-latest]
         include:
@@ -33,7 +33,7 @@ jobs:
            julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
 
     - name: JET
-      if: ${{ matrix.julia-version == '1.12.1' }}
+      if: ${{ matrix.julia-version == '1.12.4' }}
       run: |
            cd test/
            julia --color=yes -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
@@ -99,3 +99,32 @@ jobs:
            julia --color=yes --project=.. pkgs/testitems/testitemrunner.jl
            julia --color=yes --project=.. pkgs/testrunner/runtest.jl
            cd ../
+
+
+  RunForOldJuliaVersions:
+    needs: Test
+    if: github.event.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        julia-version: [1.11.8]         # 2025-12-15
+        julia-arch: [x64]
+        os: [ubuntu-latest]
+        include:
+          - julia-version: 1.6.7        # 2022-07-20
+            os: ubuntu-latest
+          - julia-version: 1.5.4        # 2021-03-11
+            os: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+      - uses: julia-actions/cache@v1
+      - uses: julia-actions/julia-buildpkg@v1
+      - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
+        run: |
+             julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
+             cd test/
+             julia --color=yes scripts/expect_failures.jl
+             cd ../
