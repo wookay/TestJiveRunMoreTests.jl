@@ -93,7 +93,7 @@ jobs:
 
     - name: pkgs
       run: |
-           julia --color=yes --project=. -e 'using Pkg; Pkg.add(split("Jive Aqua TestItems TestItemRunner SafeTestsets")); Pkg.add(url="https://github.com/aviatesk/TestRunner.jl", rev="master"); Pkg.activate()'
+           julia --color=yes --project=. -e 'using Pkg; Pkg.add(split("Jive Aqua TestItems TestItemRunner SafeTestsets TestExtras")); Pkg.add(url="https://github.com/aviatesk/TestRunner.jl", rev="master"); Pkg.activate()'
            cd test/
            julia --color=yes --project=.. runtests.jl pkgs
            julia --color=yes --project=.. pkgs/testitems/testitemrunner.jl
