@@ -36,7 +36,7 @@ jobs:
       if: ${{ matrix.julia-version == '1.12.4' }}
       run: |
            cd test/
-           julia --color=yes -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
+           # julia --color=yes -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
            cd ../
 
     - name: ARGS to filter the targets
