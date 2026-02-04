@@ -32,6 +32,10 @@ jobs:
       run: |
            julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
 
+    - name: JULIA_TEST_VERBOSE=true
+      run: |
+           JULIA_TEST_VERBOSE=true julia --color=yes -e 'using Pkg; Pkg.test("Jive"; julia_args=String[], test_args=String[])'
+
     - name: JET
       if: ${{ matrix.julia-version == '1.12.4' }}
       run: |
