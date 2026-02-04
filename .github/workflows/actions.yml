@@ -125,10 +125,14 @@ jobs:
           version: ${{ matrix.julia-version }}
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@v1
-      - uses: julia-actions/julia-runtest@v1
-      - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
+      - name: JULIA_TEST_VERBOSE=true julia runtests.jl
         run: |
              julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
+             cd test/
+             JULIA_TEST_VERBOSE=true julia --color=yes runtests.jl
+             cd ../
+      - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
+        run: |
              cd test/
              julia --color=yes scripts/expect_failures.jl
              cd ../
