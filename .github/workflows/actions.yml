@@ -9,7 +9,39 @@ permissions:
   contents: read
 
 jobs:
+  RunForOldJuliaVersions:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        julia-version: [1.11.8]         # 2025-12-15
+        julia-arch: [x64]
+        os: [ubuntu-latest]
+        include:
+          - julia-version: 1.6.7        # 2022-07-20
+            os: ubuntu-latest
+          - julia-version: 1.5.4        # 2021-03-11
+            os: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+      - uses: julia-actions/cache@v1
+      - uses: julia-actions/julia-buildpkg@v1
+      - name: JULIA_TEST_VERBOSE=true julia runtests.jl
+        run: |
+             julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.activate("."); Pkg.status("Jive")'
+             cd test/
+             JULIA_TEST_VERBOSE=true julia --project=.. --color=yes runtests.jl
+             cd ../
+      - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
+        run: |
+             cd test/
+             julia --color=yes scripts/expect_failures.jl
+             cd ../
+
   Test:
+    needs: RunForOldJuliaVersions
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -103,36 +135,3 @@ jobs:
            julia --color=yes --project=.. pkgs/testitems/testitemrunner.jl
            julia --color=yes --project=.. pkgs/testrunner/runtest.jl
            cd ../
-
-
-  RunForOldJuliaVersions:
-    needs: Test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        julia-version: [1.11.8]         # 2025-12-15
-        julia-arch: [x64]
-        os: [ubuntu-latest]
-        include:
-          - julia-version: 1.6.7        # 2022-07-20
-            os: ubuntu-latest
-          - julia-version: 1.5.4        # 2021-03-11
-            os: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: julia-actions/setup-julia@v1
-        with:
-          version: ${{ matrix.julia-version }}
-      - uses: julia-actions/cache@v1
-      - uses: julia-actions/julia-buildpkg@v1
-      - name: JULIA_TEST_VERBOSE=true julia runtests.jl
-        run: |
-             julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
-             cd test/
-             JULIA_TEST_VERBOSE=true julia --color=yes runtests.jl
-             cd ../
-      - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
-        run: |
-             cd test/
-             julia --color=yes scripts/expect_failures.jl
-             cd ../
