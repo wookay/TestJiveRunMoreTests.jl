@@ -30,10 +30,7 @@ jobs:
       - uses: julia-actions/julia-buildpkg@v1
       - name: JULIA_TEST_VERBOSE=true julia runtests.jl
         run: |
-             julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.activate("."); Pkg.status("Jive")'
-             cd test/
-             JULIA_TEST_VERBOSE=true julia --project=.. --color=yes runtests.jl
-             cd ../
+             JULIA_TEST_VERBOSE=true julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive"); Pkg.develop(path="."); Pkg.test("TestJiveRunMoreTests")'
       - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
         run: |
              cd test/

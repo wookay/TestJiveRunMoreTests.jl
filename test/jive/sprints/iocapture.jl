@@ -1,4 +1,5 @@
-module test_jive_sprints_iocapture
+using Jive
+@If VERSION >= v"1.6" module test_jive_sprints_iocapture
 
 using Test
 using Jive
