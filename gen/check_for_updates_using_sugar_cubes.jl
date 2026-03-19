@@ -34,3 +34,17 @@ check_the_code_block_diff(
     nothing,
     skip_lines = (src = vcat(1819, 2451:2454, 2457), dest = vcat(1819, 2451:2454, 2457))
 )
+
+check_the_code_block_diff(
+    "sources/stdlib/Test/test/nothrow_testset.jl",
+    nothing,
+    "test/stdlib_test/passes/nothrow_testset.jl",
+    nothing
+)
+
+check_the_code_block_diff(
+    "sources/stdlib/Test/test/test_pop_testset_exec.jl",
+    nothing,
+    "test/stdlib_test/passes/test_pop_testset_exec.jl",
+    nothing
+)
