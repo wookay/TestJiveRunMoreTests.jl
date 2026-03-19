@@ -15,14 +15,12 @@ skip = split("""
     jive/__END__/included.jl
     jive/__REPL__
     pkgs/testrunner/runtest.jl
+    stdlib_test/passes/nothrow_testset.jl
+    stdlib_test/passes/test_pop_testset_exec.jl
+    stdlib_test/fails/
 """)
-
-if VERSION >= v"1.14-DEV"
-    append!(skip, split("""
-        stdlib_test/passes/nothrow_testset.jl
-        stdlib_test/passes/test_pop_testset_exec.jl
-        stdlib_test/fails/
-    """))
+if VERSION < v"1.14-DEV"
+    push!(skip, "stdlib_test/passes/")
 end
 
 runtests(@__DIR__; targets, node1, skip)
