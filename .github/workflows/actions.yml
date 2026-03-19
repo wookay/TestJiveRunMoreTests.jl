@@ -9,14 +9,18 @@ permissions:
   contents: read
 
 jobs:
-  RunForOldJuliaVersions:
+  RunForAllJuliaVersions:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: [1.11.8]         # 2025-12-15
+        julia-version: [nightly]
         julia-arch: [x64]
         os: [ubuntu-latest]
         include:
+          - julia-version: 1.12.5       # 2026-02-09
+            os: ubuntu-latest
+          - julia-version: 1.11.9       # 2026-02-08
+            os: ubuntu-latest
           - julia-version: 1.6.7        # 2022-07-20
             os: ubuntu-latest
           - julia-version: 1.5.4        # 2021-03-11
@@ -31,18 +35,18 @@ jobs:
       - name: JULIA_TEST_VERBOSE=true julia runtests.jl
         run: |
              JULIA_TEST_VERBOSE=true julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive"); Pkg.develop(path="."); Pkg.test("TestJiveRunMoreTests")'
-      - name: runtests(; failfast::Bool), JULIA_TEST_FAILFAST
+      - name: scripts/expect_failures.jl
         run: |
              cd test/
              julia --color=yes scripts/expect_failures.jl
              cd ../
 
   Test:
-    needs: RunForOldJuliaVersions
+    needs: RunForAllJuliaVersions
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: [1.12.4]         # 2026-01-06
+        julia-version: [1.12.5]         # 2026-02-09
         julia-arch: [x64]
         os: [ubuntu-latest]
         include:
@@ -61,15 +65,11 @@ jobs:
       run: |
            julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
 
-    - name: JULIA_TEST_VERBOSE=true
-      run: |
-           JULIA_TEST_VERBOSE=true julia --color=yes -e 'using Pkg; Pkg.test("Jive"; julia_args=String[], test_args=String[])'
-
     - name: JET
-      if: ${{ matrix.julia-version == '1.12.4' }}
+      if: ${{ matrix.julia-version == '1.12.5' }}
       run: |
            cd test/
-           # julia --color=yes -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
+           julia --color=yes -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
            cd ../
 
     - name: ARGS to filter the targets
@@ -107,9 +107,16 @@ jobs:
            julia --color=yes --project=.. -e 'p1 = @async include("revise.jl"); Timer(3) do t; touch("example/test3.jl"); sleep(0.5); rm("example/test3.jl"); sleep(1); exit(0); end; wait(p1)' example
            cd ../../../
 
+    - name: JULIA_TEST_VERBOSE=true
+      run: |
+           JULIA_TEST_VERBOSE=true julia --color=yes -e 'using Pkg; Pkg.test("Jive"; julia_args=String[], test_args=String[])'
+           cd test/
+           JULIA_TEST_VERBOSE=true julia --color=yes runtests.jl stdlib_test/passes
+           cd ../
+
     - name: runtests(; enable_distributed::Bool), JIVE_PROCS
       run: |
-           julia --color=yes -e 'using Pkg; Pkg.add(split("Jive DaemonMode"))'
+           julia --color=yes -e 'using Pkg; Pkg.add(name="Jive")'
            cd test/
            echo "########### julia -pauto runtests.jl"
                            julia --color=yes -pauto -e 'using Jive; runtests(normpath(pathof(Jive), "../../test"))'

@@ -18,9 +18,6 @@ skip = split("""
 """)
 
 if VERSION >= v"1.14-DEV"
-    append!(targets, split("""
-        stdlib_test/passes/runtests.jl
-    """))
     append!(skip, split("""
         stdlib_test/passes/nothrow_testset.jl
         stdlib_test/passes/test_pop_testset_exec.jl
