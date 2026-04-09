@@ -32,7 +32,7 @@ check_the_code_block_diff(
     nothing,
     "test/stdlib_test/passes/runtests.jl",
     nothing,
-    skip_lines = (src = vcat(1819, 2451:2454, 2457), dest = vcat(1819, 2451:2454, 2457))
+    skip_lines = (src = vcat(1819, 2475:2478, 2481), dest = vcat(1819, 2475:2478, 2481))
 )
 
 check_the_code_block_diff(
