@@ -39,7 +39,6 @@ println()
 
 function jive_runtests()
     runtests(@__DIR__)
-    runtests(@__DIR__, failfast = true)
     runtests(@__DIR__, verbose = false)
 end
 

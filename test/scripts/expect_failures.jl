@@ -7,10 +7,7 @@ JULIA_TEST_FAILFAST=1 JIVE_SKIP=x julia runtests.jl errors/error2.jl
 """
 
 script_failfast = """
-                      julia -e 'using Jive; runtests(@__DIR__, targets="fails")'
-                      julia -e 'using Jive; runtests(@__DIR__, targets="fails/test", failfast=true)'
-JULIA_TEST_FAILFAST=1 julia -e 'using Jive; runtests(@__DIR__, targets="fails/test")'
-JULIA_TEST_FAILFAST=0 julia -e 'using Jive; runtests(@__DIR__, targets="fails/test", failfast=true)'
+JULIA_TEST_FAILFAST=1 julia -e 'using Jive; runtests(@__DIR__, targets="fails")'
 """
 
 
