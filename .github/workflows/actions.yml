@@ -1,7 +1,12 @@
 # https://github.com/julia-actions/cache#usage
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - README.md
+      - 'docs/**'
+  pull_request:
 
 # needed to allow julia-actions/cache to delete old caches that it has created
 permissions:
@@ -9,6 +14,29 @@ permissions:
   contents: read
 
 jobs:
+  RunJETLS:
+#    needs: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        julia-version: [1.12.5]
+        julia-arch: [x64]
+        os: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@v6
+    - name: add PATH
+      shell: bash
+      run: |
+        echo "$HOME/.julia/bin" >> "$GITHUB_PATH"
+    - name: git clone Jive.jl
+      run: |
+        git clone --depth=1 https://github.com/wookay/Jive.jl Jive.jl
+    - uses: aviatesk/JETLS.jl/.github/actions/check@release
+      with:
+        files: Jive.jl/src/Jive.jl Jive.jl/test/runtests.jl
+        exit-severity: error
+        show-severity: warn
+
   RunForAllJuliaVersions:
     runs-on: ${{ matrix.os }}
     strategy:
