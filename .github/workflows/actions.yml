@@ -16,26 +16,24 @@ permissions:
 jobs:
   RunJETLS:
 #    needs: Test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: [1.12.5]
+        julia-version: [1.12.5]         # 2026-02-09
         julia-arch: [x64]
         os: [ubuntu-latest]
     steps:
-    - uses: actions/checkout@v6
-    - name: add PATH
-      shell: bash
-      run: |
-        echo "$HOME/.julia/bin" >> "$GITHUB_PATH"
-    - name: git clone Jive.jl
-      run: |
-        git clone --depth=1 https://github.com/wookay/Jive.jl Jive.jl
-    - uses: aviatesk/JETLS.jl/.github/actions/check@release
+    - uses: actions/checkout@v4
+    - uses: julia-actions/setup-julia@v1
       with:
-        files: Jive.jl/src/Jive.jl Jive.jl/test/runtests.jl
-        exit-severity: error
-        show-severity: warn
+        version: ${{ matrix.julia-version }}
+    - uses: julia-actions/cache@v1
+    - name: JETLS
+      run: |
+        git clone --depth=1 https://github.com/aviatesk/JETLS.jl JETLS
+        julia -e 'using Pkg; Pkg.develop(path = "JETLS")'
+        git clone --depth=1 https://github.com/wookay/Jive.jl Jive
+        julia --startup-file=no --project=. -m JETLS check Jive/src/ Jive/test/
 
   RunForAllJuliaVersions:
     runs-on: ${{ matrix.os }}
