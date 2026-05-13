@@ -28,12 +28,12 @@ jobs:
       with:
         version: ${{ matrix.julia-version }}
     - uses: julia-actions/cache@v1
-    - name: JETLS
+    - name: JETLS check
       run: |
         git clone --depth=1 https://github.com/aviatesk/JETLS.jl JETLS
         julia -e 'using Pkg; Pkg.develop(path = "JETLS")'
         git clone --depth=1 https://github.com/wookay/Jive.jl Jive
-        julia --startup-file=no --project=. -m JETLS check Jive/src/ Jive/test/
+        julia --color=yes --startup-file=no --project=. -m JETLS check Jive/src/ Jive/test/
 
   RunForAllJuliaVersions:
     runs-on: ${{ matrix.os }}
