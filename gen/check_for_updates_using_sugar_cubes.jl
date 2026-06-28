@@ -29,23 +29,23 @@ end
 
 skip_lines_at = vcat(1820, 2476:2479, 2482)
 check_the_code_block_diff(
-    "sources/stdlib/Test/test/runtests.jl",
-    nothing,
     "test/stdlib_test/passes/runtests.jl",
     nothing,
+    "sources/stdlib/Test/test/runtests.jl",
+    nothing ;
     skip_lines = (src = skip_lines_at, dest = skip_lines_at)
 )
 
 check_the_code_block_diff(
-    "sources/stdlib/Test/test/nothrow_testset.jl",
-    nothing,
     "test/stdlib_test/passes/nothrow_testset.jl",
+    nothing,
+    "sources/stdlib/Test/test/nothrow_testset.jl",
     nothing
 )
 
 check_the_code_block_diff(
-    "sources/stdlib/Test/test/test_pop_testset_exec.jl",
-    nothing,
     "test/stdlib_test/passes/test_pop_testset_exec.jl",
+    nothing,
+    "sources/stdlib/Test/test/test_pop_testset_exec.jl",
     nothing
 )
