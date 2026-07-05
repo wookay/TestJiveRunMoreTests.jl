@@ -27,7 +27,7 @@ function check_the_code_block_diff(src_path::String,
     println(stdout)
 end
 
-skip_lines_at = vcat(1820, 2476:2479, 2482)
+skip_lines_at = vcat(1825, 2481:2484, 2487)
 check_the_code_block_diff(
     "test/stdlib_test/passes/runtests.jl",
     nothing,
