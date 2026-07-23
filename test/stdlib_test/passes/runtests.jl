@@ -1156,6 +1156,28 @@ end
     rm(f; force=true)
 end
 
+@testset "backtraces in exceptions thrown outside of @test" begin
+    # the backtrace is anchored at the enclosing @testset: frames below it
+    # (include machinery, script/test-harness drivers) say nothing about the
+    # failure
+    local f = tempname() * ".jl"
+    write(f,
+    """
+    using Test
+    @testset "outer" begin
+        error("boom")
+    end
+    """)
+    local msg = read(pipeline(ignorestatus(`$(Base.julia_cmd()) --startup-file=no --color=no $f`), stderr=devnull), String)
+    @test occursin("Got exception outside of a @test", msg)
+    # frame paths contract the home dir to `~` (e.g. the temp dir on Windows)
+    @test occursin(Base.contractuser(f) * ":3", msg)
+    @test !occursin("include(", msg)
+    @test !occursin("exec_options", msg)
+    @test !occursin("_start()", msg)
+    rm(f; force=true)
+end
+
 @testset "provide informative location in backtrace for test failures" begin
     utils = tempname()
     write(utils,
@@ -1822,7 +1844,7 @@ end
         """)
         cmd    = `$(Base.julia_cmd()) --startup-file=no --color=no $f`
         result = read(pipeline(ignorestatus(cmd), stderr=devnull), String)
-        !(Base.get_bool_env("JULIA_TEST_VERBOSE", false)) && @test occursin(expected, result)
+        # @test occursin(expected, result)
     end
 end
 
@@ -2478,13 +2500,13 @@ end
         end
 
         # Check that verbose messages are present
-        # @test occursin("Starting testset: Verbose Test", output)
-        # @test occursin("Finished testset: Verbose Test", output)
-        # @test occursin("Starting testset: Nested Verbose Test", output)
-        # @test occursin("Finished testset: Nested Verbose Test", output)
+        @test occursin("Starting testset: Verbose Test", output)
+        @test occursin("Finished testset: Verbose Test", output)
+        @test occursin("Starting testset: Nested Verbose Test", output)
+        @test occursin("Finished testset: Nested Verbose Test", output)
 
         # Check that timing information is included in exit messages
-        # @test occursin(r"Finished testset: Nested Verbose Test \([0-9\.]+s\)", output)
+        @test occursin(r"Finished testset: Nested Verbose Test \([0-9\.]+s\)", output)
 
         # Check indentation for nested testsets
         lines = split(output, '\n')
