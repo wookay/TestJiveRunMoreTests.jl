@@ -27,7 +27,8 @@ function check_the_code_block_diff(src_path::String,
     println(stdout)
 end
 
-skip_lines_at = vcat(1847)
+# @testset "verbose option" begin
+skip_lines_at = vcat(1851)
 check_the_code_block_diff(
     "test/stdlib_test/passes/runtests.jl",
     nothing,
