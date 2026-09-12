@@ -10,7 +10,7 @@ m = match(r"""
 Starting testset: hello
 """, output)
 if m !== nothing
-    @test VERSION >= v"1.14-DEV"
+    @test VERSION >= v"1.14-DEV" || VERSION >= v"1.13"
 end
 
 output = @sprint_plain(runtests(test_path, targets="target3", verbose=true, enable_distributed=false))
