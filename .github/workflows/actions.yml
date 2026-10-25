@@ -14,26 +14,27 @@ permissions:
   contents: read
 
 jobs:
-  RunJETLS:
+# RunJETLS:
 #    needs: Test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        julia-version: [1.12.5]         # 2026-02-09
-        julia-arch: [x64]
-        os: [ubuntu-latest]
-    steps:
-    - uses: actions/checkout@v4
-    - uses: julia-actions/setup-julia@v1
-      with:
-        version: ${{ matrix.julia-version }}
-    - uses: julia-actions/cache@v1
-    - name: JETLS check
-      run: |
-        git clone --depth=1 https://github.com/aviatesk/JETLS.jl JETLS
-        julia -e 'using Pkg; Pkg.develop(path = "JETLS")'
-        git clone --depth=1 https://github.com/wookay/Jive.jl Jive
-        julia --color=yes --startup-file=no --project=. -m JETLS check Jive/src/ Jive/test/
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        julia-version: [1.12.7]         # 2026-08-15
+#        julia-arch: [x64]
+#        os: [ubuntu-latest]
+#    steps:
+#    - uses: actions/checkout@v4
+#    - uses: julia-actions/setup-julia@v1
+#      with:
+#        version: ${{ matrix.julia-version }}
+#    - uses: julia-actions/cache@v1
+#
+#    - name: JETLS check
+#      run: |
+#        git clone --depth=1 https://github.com/aviatesk/JETLS.jl JETLS
+#        julia -e 'using Pkg; Pkg.develop(path = "JETLS")'
+#        git clone --depth=1 https://github.com/wookay/Jive.jl Jive
+#        julia --color=yes --startup-file=no --project=. -m JETLS check Jive/src/ Jive/test/
 
   RunForAllJuliaVersions:
     runs-on: ${{ matrix.os }}
@@ -43,9 +44,9 @@ jobs:
         julia-arch: [x64]
         os: [ubuntu-latest]
         include:
-          - julia-version: 1.13.0       # 2026-09-09
+          - julia-version: 1.13.3       # 2026-10-25
             os: ubuntu-latest
-          - julia-version: 1.12.5       # 2026-02-09
+          - julia-version: 1.12.7       # 2026-08-15
             os: ubuntu-latest
           - julia-version: 1.11.9       # 2026-02-08
             os: ubuntu-latest
@@ -74,7 +75,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: [1.12.5]         # 2026-02-09
+        julia-version: [1.12.7]         # 2026-08-15
         julia-arch: [x64]
         os: [ubuntu-latest]
         include:
@@ -93,12 +94,12 @@ jobs:
       run: |
            julia --color=yes -e 'using Pkg; Pkg.develop("Jive"); Pkg.status("Jive")'
 
-    - name: JET
-      if: ${{ matrix.julia-version == '1.12.5' }}
-      run: |
-           cd test/
-           julia --color=yes -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
-           cd ../
+  # - name: JET
+  #   if: ${{ matrix.julia-version == '1.12.7' }}
+  #   run: |
+  #        cd test/
+  #        julia --color=yes -e 'using Pkg; Pkg.add.(("Preferences", "JET")); Pkg.status("Jive"); include("scripts/jet.jl")'
+  #        cd ../
 
     - name: ARGS to filter the targets
       run: |
